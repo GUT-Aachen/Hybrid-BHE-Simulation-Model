@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Düber"
+  given-names: "Stephan"
+  orcid: "0000-0001-7029-7303"
+title: "Hybrid simulation model for borehole heat exchangers"
+version: 1.0.0
+date-released: 2022-02-04
+url: "https://github.com/GUT-Aachen/Hybrid-BHE-Simulation-Model"
