@@ -150,7 +150,8 @@ class BHE_CXA_impl:
 
 		## main diagonal Tin 
 		self.dataTemp = np.ones(self.nz)*(1+self.F5i+self.F6F2+self.F6F4)
-		self.dataTemp[0] = (1+self.F6F2+self.F6F4)
+		#self.dataTemp[0] = (1+self.F6F2+self.F6F4)
+		self.dataTemp[0] = 1
 		self.data = np.append(self.data,self.dataTemp)
 		self.posX = np.append(self.posX,np.arange(0,self.nz,1) + self.nz)
 		self.posY = np.append(self.posY,np.arange(0,self.nz,1) + self.nz)
@@ -226,7 +227,8 @@ class BHE_CXA_impl:
 
 		## main diagonal Tin 
 		self.dataTemp = np.ones(self.nz)*(1+self.F5iNoFlow+self.F6F2NoFlow+self.F6F4NoFlow)
-		self.dataTemp[0] = (1+self.F6F2NoFlow+self.F6F4NoFlow)
+		#self.dataTemp[0] = (1+self.F6F2NoFlow+self.F6F4NoFlow)
+		self.dataTemp[0] = 1
 		self.data = np.append(self.data,self.dataTemp)
 		self.posX = np.append(self.posX,np.arange(0,self.nz,1) + self.nz)
 		self.posY = np.append(self.posY,np.arange(0,self.nz,1) + self.nz)
@@ -280,12 +282,12 @@ class BHE_CXA_impl:
 			self.result[self.nz] = T_in	# BC Tin
 			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Solve EQS
 			# Rausschreiben für Plot
-			self.T_grout[:] = self.U[0:self.nz]
-			self.Tf_in[:] = self.U[self.nz:2*self.nz]
-			self.Tf_out[:] = self.U[2*self.nz:3*self.nz]
+			self.T_grout = self.U[0:self.nz]
+			self.Tf_in = self.U[self.nz:2*self.nz]
+			self.Tf_out = self.U[2*self.nz:3*self.nz]
 			
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 									
 		return True
 	
@@ -295,13 +297,12 @@ class BHE_CXA_impl:
 			self.result[self.nz] = T_in	# Vorgabe Randbedingung Tin
 			self.U =sparse.linalg.spsolve(self.K_sparse_NoFlow,self.result)	# Lösen GlS
 			# Rausschreiben für Plot
-			self.T_grout[:] = self.U[0:self.nz]
-			self.Tf_in[:] = self.U[self.nz:2*self.nz]
-			self.Tf_out[:] = self.U[2*self.nz:3*self.nz]
-			
+			self.T_grout = self.U[0:self.nz]
+			self.Tf_in = self.U[self.nz:2*self.nz]
+			self.Tf_out = self.U[2*self.nz:3*self.nz]
 			
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 			
+			self.result[:] = np.copy(self.U[:]) 			
 		return True
 	
 class BHE_CXA_expl:
@@ -871,12 +872,12 @@ class BHE_2U_impl:
 			self.result[2*self.nz] = T_in	# Vorgabe Randbedingung Tin
 			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
 	
 	
@@ -919,12 +920,12 @@ class BHE_2U_impl:
 			self.result[2*self.nz] = T_in	# Vorgabe Randbedingung Tin
 			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
 	
 	
@@ -932,12 +933,12 @@ class BHE_2U_impl:
 		for i in range(0,tfinal):	
 			self.U = sparse.linalg.spsolve(self.K_sparse_NoFlow,self.result)
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 			
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
 		
 class BHE_2U_expl:
@@ -1769,30 +1770,14 @@ class BHE_1U_impl:
 			#self.U = sparse.linalg.bicgstab(self.K_sparse_Flow, self.result, x0=None, tol=1e-05, maxiter=None, M=None, callback=None, atol=None)[0]
 			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
 		
-	def calcSondeFlowAllOut(self,tfinal,T_in):	
-		self.Tf_AllOut = np.zeros(tfinal)
-		for i in range(0,tfinal):
-			self.result[2*self.nz] = T_in[i]	# Vorgabe Randbedingung Tin
-			#self.U = sparse.linalg.bicgstab(self.K_sparse_Flow, self.result, x0=None, tol=1e-05, maxiter=None, M=None, callback=None, atol=None)[0]
-			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
-			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
-			self.Tf_in = self.U[2*self.nz:3*self.nz] 
-			self.Tf_out = self.U[3*self.nz:4*self.nz] 
-			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
-			self.Tf_AllOut[i] = self.Tf_out[1]
-		return True
-	
 	def calcSondeFlowQ(self,tfinal,T_in,Q):	
 		if Q != self.Qold:		
 		#if Q > self.Qold*1.05 or Q < self.Qold*0.95:		
@@ -1833,259 +1818,28 @@ class BHE_1U_impl:
 			self.result[2*self.nz] = T_in	# Vorgabe Randbedingung Tin
 			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
-	'''	
-	def calcSondeFlowQ(self,tfinal,T_in,Q,BheData):	
-		if Q != self.Qold:
-			
-			self.Qold = Q	
 
-			# Flow velocity
-			self.dynviscF = BheData['dynviscF']
-			self.u = BheData['Qf']/(np.pi*self.rpi**2)
-			self.maxVel = self.u 
 
-			# Flow parameters
-			self.Pr = self.dynviscF*BheData['capF']/BheData['densF']/BheData['lmF']
-			self.Re = self.u*self.dpi/(self.dynviscF/BheData['densF'])
-			self.Nu = Nusselt1U (self.Re,self.Pr,self.rpi,BheData['length'])
-			self.Radv  = 1/(self.Nu*BheData['lmF']*np.pi)
-			
-			
-			# Resistances
-			self.s = BheData['distP']
-			self.x = np.log((self.D**2+2*self.dpo**2)**0.5/(2*self.dpo))/np.log(self.D/(2**0.5*self.dpo))
-			self.Rg = (1.601-0.888*self.s/self.D) * np.arccosh((self.D**2+self.dpo**2-self.s**2)/(2*self.D*self.dpo))/(2*np.pi*BheData['lmG'])
-			self.Rgs = (1-self.x)*self.Rg		
-			self.Rconb = self.x*self.Rg		
-			self.Rcona = np.log(self.rpo/self.rpi)/(2*np.pi*BheData['lmP'])	
-			self.Rar1 = np.arccosh((2*self.s**2-self.dpo**2)/self.dpo**2)/(2*np.pi*BheData['lmG'])		
-			self.Rgg = (2*self.Rgs*(self.Rar1-2*self.x*self.Rg))/(2*self.Rgs-self.Rar1+2*self.x*self.Rg)
-
-			
-			### Check negative thermal resistances ###
-			if ((1/self.Rgg + 1/(2*self.Rgs))**(-1) <= 0):
-				self.x = 2/3*self.x	
-				self.Rconb = self.x*self.Rg
-				self.Rgs = (1-self.x)*self.Rg
-				self.Rgg = (2*self.Rgs*(self.Rar1-2*self.x*self.Rg))/(2*self.Rgs-self.Rar1+2*self.x*self.Rg)
-			if ((1/self.Rgg + 1/(2*self.Rgs))**(-1) <= 0):
-				self.x = self.x * 1/3	
-				self.Rconb = self.x*self.Rg	
-				self.Rgs = (1-self.x)*self.Rg
-				self.Rgg = (2*self.Rgs*(self.Rar1-2*self.x*self.Rg))/(2*self.Rgs-self.Rar1+2*self.x*self.Rg)
-			if ((1/self.Rgg + 1/(2*self.Rgs))**(-1) <= 0):
-				self.x = 0	
-				self.Rconb = self.x*self.Rg	
-				self.Rgs = (1-self.x)*self.Rg
-				self.Rgg = (2*self.Rgs*(self.Rar1-2*self.x*self.Rg))/(2*self.Rgs-self.Rar1+2*self.x*self.Rg)	
-			self.Rfg = self.Radv + self.Rcona + self.Rconb		
-			self.RfgNoFlow = self.Rconb + self.Rcona
-			self.Rgs_coupling = 2./self.Rgs
-					
-			# Volumes and Areas
-			self.Ag = np.pi*(self.ro**2-2*self.rpo**2)/2	# area grout
-			self.Vg = self.Ag*self.dz						# volume grout
-			self.Ap = np.pi*self.rpi**2						# area pipe/fluid
-			self.Vp = self.Ap*self.dz						# volume pipe/fluid
-			
-			# Variables Flow					# Ab hier werden werte zusammengefasst damit rechnung schneller läuft
-			self.F1 = self.dz/self.Rgs			# am besten zurücksubstituieren für verständnis
-			self.F2 = self.dz/self.Rfg
-			self.F3 = self.dt/self.Vg/BheData['capG']
-			self.F4 = self.dz/self.Rgg
-			self.F5 = self.dt/self.dz*self.u
-			self.F6 = self.dt/self.Vp/BheData['capF']
-			self.F8 = BheData['lmG']/self.dz*self.Ag		
-			
-			self.F6F2 = self.F6*self.F2
-			self.F3F1 = self.F3*self.F1
-			self.F3F2 = self.F3*self.F2
-			self.F3F4 = self.F3*self.F4
-			self.F3F8 = self.F3*self.F8
-		
-			# Variables NoFlow
-			self.F5NoFlow = 0
-			self.F2NoFlow = self.dz/self.RfgNoFlow
-			self.F3F2NoFlow = self.F3*self.F2NoFlow
-			self.F6F2NoFlow = self.F6*self.F2NoFlow		
-			
-			# Set up Matrix
-			self.na = 5 # number of cell arrays, Tin, Tout, Tgi, Tgo, Tsoil
-
-			# Reihenfolge in Matrix: Tgi, Tgo, Tin, Tout, TSoil
-			# data = Datenarray, posX = X Position, posY = Y Position, dataTemp = Temporär
-
-			#self.result = np.ones(self.nz*self.na)*self.Tundist # Initialbedingung
-			#self.result[2*nz] = Tin	# Vorlauftemperatur
-			#self.result[0:nz] =  Tgi
-			#self.result[nz:2*nz] = Tgo
-			#self.result[2*nz:3*nz] = Tin
-			#self.result[3*nz:4*nz] = Tout
-			#self.result[4*nz:5*nz] = Tsoil
-			
-			############### Matrix for flow #################
-			#################################################
-			##### Tgi
-			## main diagonal Tgi 1+2F3F8+F3F1+F3F2+2F3F4 = 20, oberste und unterste Zelle grout 1+1F3F8+F3F1+F3F2+2F3F4 = 19
-			self.dataTemp = np.ones(self.nz)*(1+2*self.F3F8+self.F3F1+self.F3F2+self.F3F4)
-			self.dataTemp[0] = (1+self.F3F8+self.F3F1+self.F3F2+self.F3F4) # oberste Zelle
-			self.dataTemp[self.nz-1] = (1+self.F3F8+self.F3F1+self.F3F2+self.F3F4) # unterste Zelle
-			self.data = self.dataTemp
-			self.posX = np.arange(0,self.nz,1)
-			self.posY = np.arange(0,self.nz,1)
-			## Tgi z-1 -F3F8 = -1, oberste Zelle = 0, unterste Zelle = -F3F8 = -1
-			self.data = np.append(self.data,np.ones(self.nz-1)*-self.F3F8)
-			self.posX = np.append(self.posX,np.arange(0,self.nz-1,1)+1)
-			self.posY = np.append(self.posY,np.arange(0,self.nz-1,1))
-			## Tgi z+1 -F3F8 = -1, oberste Zelle = -F3F8 = -1, unterste Zelle = 0
-			self.data = np.append(self.data,np.ones(self.nz-1)*-self.F3F8)
-			self.posX = np.append(self.posX,np.arange(0,self.nz-1,1))
-			self.posY = np.append(self.posY,np.arange(0,self.nz-1,1)+1)
-			## Tgi to soil -F3F1 = -2		
-			self.dataTemp = np.ones(self.nz)*-self.F3F1
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1))
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+(self.na-1)*self.nz)
-			## Tgi to tin -F3F12 = -3
-			self.dataTemp = np.ones(self.nz)*-self.F3F2
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1))
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+(self.na-3)*self.nz)
-			## Tgi to Tgo -2F3F14 = -8
-			self.dataTemp = np.ones(self.nz)*-self.F3F4
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1))
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+(self.na-4)*self.nz)
-
-			##### Tgo
-			## main diagonal Tgo 1+2F3F8+F3F1+F3F2+2F3F4 = 20, oberste und unterste Zelle grout 1+1F3F8+F3F1+F3F2+2F3F4 = 19
-			self.dataTemp = np.ones(self.nz)*(1+2*self.F3F8+self.F3F1+self.F3F2+self.F3F4)
-			self.dataTemp[0] = (1+self.F3F8+self.F3F1+self.F3F2+self.F3F4) # oberste Zelle
-			self.dataTemp[self.nz-1] = (1+self.F3F8+self.F3F1+self.F3F2+self.F3F4) # unterste Zelle
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+self.nz)
-			## Tgo z-1 -F3F8 = -1, oberste Zelle = 0, unterste Zelle = -F3F8 = -1
-			self.data = np.append(self.data,np.ones(self.nz-1)*-self.F3F8)
-			self.posX = np.append(self.posX,np.arange(0,self.nz-1,1)+1+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz-1,1)+self.nz)
-			## Tgo z+1 -F3F8 = -1, oberste Zelle = -F3F8 = -1, unterste Zelle = 0
-			self.data = np.append(self.data,np.ones(self.nz-1)*-self.F3F8)
-			self.posX = np.append(self.posX,np.arange(0,self.nz-1,1)+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz-1,1)+1+self.nz)
-			## Tgo to soil -F3F1 = -2
-			self.dataTemp = np.ones(self.nz)*-self.F3F1
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+4*self.nz)
-			## Tgo to tout -F3F12 = -3
-			self.dataTemp = np.ones(self.nz)*-self.F3F2
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+3*self.nz)
-			## Tgo to Tgi -2F3F14 = -8
-			self.dataTemp = np.ones(self.nz)*-self.F3F4
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1))
-
-			##### Tfi
-			## main diagonal Tfi 1+F5+F6F2 = 12, oberste Zelle 1+F6F2 = 7
-			self.dataTemp = np.ones(self.nz)*(1+self.F5+self.F6F2)
-			self.dataTemp[0] = 1
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1) + 2*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1) + 2*self.nz)
-			## Tfi z-1 -F5 = -5, oberste Zelle = 0
-			self.data = np.append(self.data,np.ones(self.nz-1)*-self.F5)
-			self.posX = np.append(self.posX,np.arange(0,self.nz-1,1)+1+ 2*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz-1,1)+ 2*self.nz)
-			## Tfi to Tgi -F6F2 = -6
-			self.dataTemp = np.ones(self.nz)*-self.F6F2
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+ 2*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1))
-
-			##### Tfo
-			## main diagonal Tfo 1+F5+F6F2 = 12, 
-			self.dataTemp = np.ones(self.nz)*(1+self.F5+self.F6F2)
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1) + 3*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1) + 3*self.nz)
-			## Tfo z+1 -F5 = -5, unterste Zelle Tfi statt Tfo
-			self.data = np.append(self.data,np.ones(self.nz)*-self.F5)
-			self.posXTemp = np.arange(0,self.nz,1)+ 3*self.nz
-			self.posYTemp = np.arange(0,self.nz,1)+1+3*self.nz
-			self.posYTemp[self.nz-1] = self.posYTemp[self.nz-1]-(self.nz+1)
-			self.posX = np.append(self.posX,self.posXTemp)
-			self.posY = np.append(self.posY,self.posYTemp)
-			## Tfo to Tgo -F6F2 = -6
-			self.dataTemp = np.ones(self.nz)*-self.F6F2
-			self.dataTemp[0] = 0
-			self.data = np.append(self.data,self.dataTemp)
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1)+ 3*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1)+self.nz)
-
-			# main diagonal Soil 1
-			self.data = np.append(self.data,np.ones(self.nz))
-			self.posX = np.append(self.posX,np.arange(0,self.nz,1) + 4*self.nz)
-			self.posY = np.append(self.posY,np.arange(0,self.nz,1) + 4*self.nz)
-
-			self.K = csr_matrix((self.data, (self.posX, self.posY)), shape=(self.nz*self.na, self.nz*self.na),dtype=np.float)
-			self.K_sparse_Flow = sparse.csr_matrix(self.K)
-
-			
-		for i in range(0,tfinal):
-			self.result[2*self.nz] = T_in	# Vorgabe Randbedingung Tin
-			self.U =sparse.linalg.spsolve(self.K_sparse_Flow,self.result)	# Lösen GlS
-			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
-			self.Tf_in = self.U[2*self.nz:3*self.nz] 
-			self.Tf_out = self.U[3*self.nz:4*self.nz] 
-			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
-		return True
-	'''
 	def calcSondeNoFlow(self,tfinal):	
 		for i in range(0,tfinal):	
 			self.U = sparse.linalg.spsolve(self.K_sparse_NoFlow,self.result)
 			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
+			self.T_grout_in = self.U[0:self.nz] 
+			self.T_grout_out = self.U[self.nz:2*self.nz] 
 			self.Tf_in = self.U[2*self.nz:3*self.nz] 
 			self.Tf_out = self.U[3*self.nz:4*self.nz] 			
 			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
+			self.result[:] = np.copy(self.U[:]) 
 		return True
 		
-	def calcSondeNoFlowAllOut(self,tfinal,T_in):	
-		self.Tf_AllOut = np.zeros(tfinal)
-		for i in range(0,tfinal):	
-			self.U = sparse.linalg.spsolve(self.K_sparse_NoFlow,self.result)
-			# Rausschreiben für Plot
-			self.T_grout_in[:] = self.U[0:self.nz] 
-			self.T_grout_out[:] = self.U[self.nz:2*self.nz] 
-			self.Tf_in = self.U[2*self.nz:3*self.nz] 
-			self.Tf_out = self.U[3*self.nz:4*self.nz] 			
-			# reinschreiben nächster Zeitschritt
-			self.result[:] = self.U[:] 
-			self.Tf_AllOut[i] = self.Tf_out[1]
-		return True
+
 
 			
 def Nusselt2U (Re,Pr,rpi,H):
